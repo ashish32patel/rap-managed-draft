@@ -1,0 +1,5 @@
+CLASS zakp_bp_booking_d DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zakp_r_travel_d.
+ENDCLASS.
+
+CLASS zakp_bp_booking_d IMPLEMENTATION.
+ENDCLASS.

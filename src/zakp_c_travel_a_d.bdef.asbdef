@@ -1,0 +1,38 @@
+projection;
+strict ( 2 );
+use draft;
+
+define behavior for ZAKP_C_TRAVEL_A_D alias Travel
+use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Prepare;
+  use action Resume;
+  use association _Booking { create; with draft; }
+}
+
+define behavior for ZAKP_C_BOOKING_A_D alias Booking
+use etag
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+  use association _BookingSupplement { create; with draft; }
+}
+
+define behavior for ZAKP_C_BOOKINGSUPPLEMENT_A_D alias BookingSupplement
+use etag
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+  use association _Booking { with draft; }
+}
