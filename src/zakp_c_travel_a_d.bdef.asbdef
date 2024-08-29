@@ -1,6 +1,7 @@
 projection;
 strict ( 2 );
 use draft;
+use side effects;
 
 define behavior for ZAKP_C_TRAVEL_A_D alias Travel
 use etag
@@ -14,6 +15,11 @@ use etag
   use action Discard;
   use action Prepare;
   use action Resume;
+
+  use action acceptTravel;
+  use action rejectTravel;
+  use action deductDiscount;
+
   use association _Booking { create; with draft; }
 }
 

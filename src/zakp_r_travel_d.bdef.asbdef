@@ -17,15 +17,29 @@ etag master LocalLastChangedAt
   field ( numbering : managed ) TravelUUID;
   field ( readonly ) TravelUUID;
   association _Booking { create; with draft; }
-  field ( features : instance ) BookingFee;
 
+  //  field ( features : instance ) BookingFee;
+  field ( features : instance ) AgencyID;
 
-  draft action Resume with additional implementation;
+  action ( features : instance ) acceptTravel result [1] $self;
+  action ( features : instance ) rejectTravel result [1] $self;
+  action deductDiscount parameter ZAKP_AE_TRAVEL_DISCOUNT result [1] $self;
+  internal action reCalcTotalPrice;
+
+  determination calculateTotalPrice on modify { create; field BookingFee, CurrencyCode; }
+
+  draft action Resume;//with additional implementation;
   draft action Edit;
   draft action Activate optimized;
   draft action Discard;
 
   draft determine action Prepare;
+
+  side effects
+  {
+    field BookingFee affects field TotalPrice;
+    field CurrencyCode affects field TotalPrice;
+  }
 
   mapping for zakp_a_travel_d
     {
@@ -65,6 +79,14 @@ etag master LocalLastChangedAt
   association _Travel { with draft; }
   association _BookingSupplement { create; with draft; }
 
+  determination calculateTotalPrice on modify { create; field FlightPrice, CurrencyCode; }
+
+  side effects
+  {
+    field FlightPrice affects field _Travel.TotalPrice;
+    field CurrencyCode affects field _Travel.TotalPrice;
+  }
+
   mapping for zakp_a_booking_d
     {
       AirlineID          = carrier_id;
@@ -96,9 +118,18 @@ etag master LocalLastChangedAt
   field ( numbering : managed ) BookSupplUUID;
   field ( readonly ) BookSupplUUID;
   field ( readonly ) BookingUUID, TravelUUID;
+  field ( mandatory ) SupplementID, CurrencyCode;
 
   association _Travel { with draft; }
   association _Booking { with draft; }
+
+  determination calculateTotalPrice on modify { create; field BookSupplPrice, CurrencyCode; }
+
+  side effects
+  {
+    field BookSupplPrice affects field _Travel.TotalPrice;
+    field CurrencyCode affects field _Travel.TotalPrice;
+  }
 
   mapping for zakp_a_bksuppl_d
     {
